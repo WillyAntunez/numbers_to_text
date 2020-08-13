@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Numeros a texto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
 
@@ -12,20 +15,27 @@
     </header>
 
     <main>
-        <h2>Ingrese un numero</h2>
+        <div class="number-in">  
+            <h2>Ingrese un numero</h2>
+            <input type="text" >
+        </div>
+        
+        <div class="language-btns">
+            <h2>Idioma</h2>
 
-        <input type="text">
+            <div>
+                <button>Español</button>
+                <button>Ingles</button>
+            </div>
+        </div>
+        
+        <button class="result-btn">Ver resultado</button>
 
-        <h2>Idioma</h2>
-
-        <button>Español</button>
-        <button>Ingles</button>
-
-        <button>Ver resultado</button>
-
-        <h2>Resultado en texto:</h2>
-        <hr>
-        <h2>Ciento cincuenta y uno</h2>
+        <div class="result">
+            <h2 class="result-title">Resultado en texto:</h2>
+            <hr>
+            <h2 class="result-out">Ciento cincuenta y uno</h2>
+        </div>
     </main>
 
     <footer>
