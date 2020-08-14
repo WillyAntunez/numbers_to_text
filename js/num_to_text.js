@@ -10,6 +10,7 @@ export function numberToTextES(number){
         'diecisiete':	17,
         'dieciocho': 18,
         'diecinueve':	19,
+        'veinte': 20,
         'veintiuno': 21,
         'veintidós': 22,
         'veintitrés': 23,
@@ -30,7 +31,8 @@ export function numberToTextES(number){
         'seis': 6,
         'siete': 7,
         'ocho': 8,
-        'nueve': 9
+        'nueve': 9,
+        'diez': 10
     },
         tenNumbers = {
         'diez':10,
@@ -66,20 +68,20 @@ export function numberToTextES(number){
             unitPart = num % 10,
             tenPart = (Math.floor(num / 10)) * 10;
 
-        if(num < 10){
+        if(num <= 10){
             out = getKeyByValue(unitNumbers, num);
-        }else if( num > 10 && num < 29){
+        }else if( num > 10 && num <= 29){
             out = getKeyByValue(specialNumbers, num);
-        }else if(num > 29 && num < 100 && unitPart !== 0){
+        }else if(num > 29 && unitPart !== 0){
             out = getKeyByValue(tenNumbers, tenPart) + ' y ' + getKeyByValue(unitNumbers, unitPart);
-        }else if(num > 29 && num < 100 && unitPart === 0){
+        }else if(num > 29 && unitPart === 0){
             out = getKeyByValue(tenNumbers, tenPart);
         }
 
         return out;
     }
 
-    function getBasicUnits(num){
+    function getBasicUnits(num, replaceUno){
         let result,
             hundredPart = Math.floor(num/100) * 100,
             tenPart = num % 100;
@@ -104,6 +106,10 @@ export function numberToTextES(number){
             result = 'ciento ' + getTenPart(tenPart);
         }
 
+        if(replaceUno && result && result.indexOf('uno') >= 0 ){
+            result = result.replace('uno', 'un')
+        }
+
         return result;
     }
 
@@ -113,11 +119,11 @@ export function numberToTextES(number){
             basicUnitsPart = num % 1000;
 
         if(num > 2000 && basicUnitsPart !== 0){
-            result  = getBasicUnits(thousandPart) + ' mil ' + getBasicUnits(basicUnitsPart);
+            result  = getBasicUnits(thousandPart,true) + ' mil ' + getBasicUnits(basicUnitsPart);
         }
 
         if(num > 2000 && basicUnitsPart === 0){
-            result  = getBasicUnits(thousandPart) + ' mil ';
+            result  = getBasicUnits(thousandPart,true) + ' mil ';
         }
 
         if(num > 1000 && num < 2000 && basicUnitsPart !== 0){
@@ -131,8 +137,33 @@ export function numberToTextES(number){
         return result;
     }
 
+    function getMillionUnits(num) {
+        let result,
+            millionPart = Math.floor(num / 1000000),
+            unitPart = num % 1000000;
+        
+        if (millionPart < 1000 && millionPart > 1){
+            result = getBasicUnits(millionPart, true) + ' millones ';
+        }
+        if (millionPart >= 1000 && millionPart > 1){
+            result = getThousandUnits(millionPart) + ' millones ';
+        }
+        if (millionPart === 1){
+            result = 'un millon '
+        }
 
-    console.log(getThousandUnits(1000))
+        if(unitPart<1000 && unitPart!=0){
+            result += getBasicUnits(unitPart)
+        }
+        if(unitPart>1000 && unitPart!=0){
+            result += getThousandUnits(unitPart)
+        }
+
+        return result;
+    }
+
+    
+    console.log(getMillionUnits(999999999999))
     
 }
 
