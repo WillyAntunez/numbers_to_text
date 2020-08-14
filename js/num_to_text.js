@@ -104,21 +104,28 @@ export function numberToTextES(number){
             result = 'ciento ' + getTenPart(tenPart);
         }
 
+        return result;
+    }
+
+    function getThousandUnits(num) {
+        let result,
+            thousandPart = Math.floor(num / 1000),
+            basicUnitsPart = num % 1000;
+
+        if(num > 2000 && basicUnitsPart !== 0){
+            result  = getBasicUnits(thousandPart) + ' mil ' + getBasicUnits(basicUnitsPart);
+        }
+
+        if(num > 2000 && basicUnitsPart === 0){
+            result  = getBasicUnits(thousandPart) + ' mil ';
+        }
 
         return result;
     }
 
+
+    console.log(getThousandUnits(500000))
     
-
-    console.log(getBasicUnits(156))
-    
-
-
-    
-
-
-    
-
 }
 
 export function numberToTextEN(){
