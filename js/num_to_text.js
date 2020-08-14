@@ -113,21 +113,21 @@ export function numberToTextES(number){
         return result;
     }
 
-    function getThousandUnits(num) {
+    function getThousandUnits(num, replaceUno = false) {
         let result,
             thousandPart = Math.floor(num / 1000),
             basicUnitsPart = num % 1000;
 
         if(num > 2000 && basicUnitsPart !== 0){
-            result  = getBasicUnits(thousandPart,true) + ' mil ' + getBasicUnits(basicUnitsPart);
+            result  = getBasicUnits(thousandPart, true) + ' mil ' + getBasicUnits(basicUnitsPart);
         }
 
         if(num > 2000 && basicUnitsPart === 0){
-            result  = getBasicUnits(thousandPart,true) + ' mil ';
+            result  = getBasicUnits(thousandPart, replaceUno) + ' mil ';
         }
 
         if(num > 1000 && num < 2000 && basicUnitsPart !== 0){
-            result = 'mil ' + getBasicUnits(basicUnitsPart);
+            result = 'mil ' + getBasicUnits(basicUnitsPart, replaceUno);
         }
 
         if(num === 1000){
@@ -146,7 +146,7 @@ export function numberToTextES(number){
             result = getBasicUnits(millionPart, true) + ' millones ';
         }
         if (millionPart >= 1000 && millionPart > 1){
-            result = getThousandUnits(millionPart) + ' millones ';
+            result = getThousandUnits(millionPart, true) + ' millones ';
         }
         if (millionPart === 1){
             result = 'un millon '
@@ -162,9 +162,34 @@ export function numberToTextES(number){
         return result;
     }
 
-    
-    console.log(getMillionUnits(999999999999))
-    
+    function getBillions(num){
+        let result,
+            billionPart = Math.floor(num / 1000000000000),
+            millionPart = num % 1000000000000;
+        
+        console.log(num.toLocaleString());
+        
+        if(billionPart === 1){
+            result = 'un billon';
+        }
+        if(billionPart > 1 && billionPart < 1000){
+            result = getBasicUnits(billionPart, true) + ' billones ';
+        }
+        if(billionPart >= 1000){
+            result = getThousandUnits(billionPart, true) + ' billones ';
+        }
+
+        //terminar la parte de los billones, me quede en las unidades, terminar este modulo (en esp) y crear validacion que respete el maximo numero soportado
+        if(millionPart < 100 && millionPart >= 1){
+            result += getBasicUnits(millionPart);
+        }
+
+        return result;
+    }
+
+    //OJO : numero maximo soportado por este codigo 999999999999999
+    console.log(getBillions(999999999999999))
+
 }
 
 export function numberToTextEN(){
