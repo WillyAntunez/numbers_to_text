@@ -57,8 +57,67 @@ export function numberToTextES(number){
         thousand = 1000,
         million = 1000000;
         
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+
+    function getTenPart(num){
+        let out,
+            unitPart = num % 10,
+            tenPart = (Math.floor(num / 10)) * 10;
+
+        if(num < 10){
+            out = getKeyByValue(unitNumbers, num);
+        }else if( num > 10 && num < 29){
+            out = getKeyByValue(specialNumbers, num);
+        }else if(num > 29 && num < 100 && num%10 != 0){
+            out = getKeyByValue(tenNumbers, tenPart) + ' y ' + getKeyByValue(unitNumbers, unitPart);
+        }else if(num > 29 && num < 100 && num%10 === 0){
+            out = getKeyByValue(tenNumbers, tenPart);
+        }
+
+        return out;
+    }
+
+    function getBasicUnits(num){
+        let result,
+            hundredPart = Math.floor(num/100) * 100,
+            tenPart = num%100;
+
+        if(num < 100){
+            result = getTenPart(num);
+        }
+
+        if(num > 100 && num % 100 != 0){
+            result = getKeyByValue(hundredNumbers, hundredPart) + ' ' + getTenPart(tenPart);
+        }
+
+        if(num > 100 && num % 100 != 0){
+            result = getKeyByValue(hundredNumbers, hundredPart) + ' ' + getTenPart(tenPart);
+        }
+
+        if (num >= 100 && num % 100 === 0){
+            result = getKeyByValue(hundredNumbers, hundredPart);
+        }
+
+        if(num > 100 && num < 200 && num % 100 != 0){
+            result = 'ciento ' + getTenPart(tenPart);
+        }
 
 
+        return result;
+    }
+
+    
+
+    console.log(getBasicUnits(156))
+    
+
+
+    
+
+
+    
 
 }
 
