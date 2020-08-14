@@ -120,11 +120,19 @@ export function numberToTextES(number){
             result  = getBasicUnits(thousandPart) + ' mil ';
         }
 
+        if(num > 1000 && num < 2000 && basicUnitsPart !== 0){
+            result = 'mil ' + getBasicUnits(basicUnitsPart);
+        }
+
+        if(num === 1000){
+            result = 'mil ';
+        } 
+
         return result;
     }
 
 
-    console.log(getThousandUnits(999999))
+    console.log(getThousandUnits(1000))
     
 }
 
