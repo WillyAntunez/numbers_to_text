@@ -70,9 +70,9 @@ export function numberToTextES(number){
             out = getKeyByValue(unitNumbers, num);
         }else if( num > 10 && num < 29){
             out = getKeyByValue(specialNumbers, num);
-        }else if(num > 29 && num < 100 && num%10 != 0){
+        }else if(num > 29 && num < 100 && unitPart !== 0){
             out = getKeyByValue(tenNumbers, tenPart) + ' y ' + getKeyByValue(unitNumbers, unitPart);
-        }else if(num > 29 && num < 100 && num%10 === 0){
+        }else if(num > 29 && num < 100 && unitPart === 0){
             out = getKeyByValue(tenNumbers, tenPart);
         }
 
@@ -82,25 +82,25 @@ export function numberToTextES(number){
     function getBasicUnits(num){
         let result,
             hundredPart = Math.floor(num/100) * 100,
-            tenPart = num%100;
+            tenPart = num % 100;
 
         if(num < 100){
             result = getTenPart(num);
         }
 
-        if(num > 100 && num % 100 != 0){
+        if(num > 100 && tenPart !== 0){
             result = getKeyByValue(hundredNumbers, hundredPart) + ' ' + getTenPart(tenPart);
         }
 
-        if(num > 100 && num % 100 != 0){
+        if(num > 100 && tenPart !== 0){
             result = getKeyByValue(hundredNumbers, hundredPart) + ' ' + getTenPart(tenPart);
         }
 
-        if (num >= 100 && num % 100 === 0){
+        if (num >= 100 && tenPart === 0){
             result = getKeyByValue(hundredNumbers, hundredPart);
         }
 
-        if(num > 100 && num < 200 && num % 100 != 0){
+        if(num > 100 && num < 200 && tenPart !== 0){
             result = 'ciento ' + getTenPart(tenPart);
         }
 
@@ -124,7 +124,7 @@ export function numberToTextES(number){
     }
 
 
-    console.log(getThousandUnits(500000))
+    console.log(getThousandUnits(999999))
     
 }
 
