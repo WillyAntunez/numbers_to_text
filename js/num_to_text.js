@@ -1,3 +1,25 @@
+/* Proceso de validacion antes de introducir un numero a esta funcion:
+
+        Puede ser numero o string.(si es numero pierde presicion al convertirlo a string)
+        Puede tener comas o no.
+        Puede tener numeros decimales o enteros
+        *Puede ser negativo
+
+        NO puede tener caracteres extraños en medio de los numeros, unicamente un negativo al comienzo para señalar que el numero es negativo
+        NO puede tener mas de un punto decimal
+        NO puede tener letras
+        NO puede tener ceros a la izquierda
+
+    */
+
+    /* Proceso de preparacion de datos dentro de la funcion:
+
+        **separar la parte decimal de la parte entera
+        X-Elimina el negativo al inicio y almacena en una variable que se trata de un numero negativo
+        X-Dividir numeros en grupos de tres
+
+*/
+
 export function numberToTextES(number){
 
     const specialNumbers = {
@@ -55,31 +77,48 @@ export function numberToTextES(number){
         'setecientos': 700,
         'ochocientos': 800,
         'novecientos': 900
-    },
-        thousand = 1000,
-        million = 1000000;
-        
+    };
+
+    let resultText = '',
+        numberArr = [],
+        isNegative = false;
+
+    
+    //Declaring functions
+    function splitNumber(numberStr){
+        numberStr = numberStr.split('').reverse().join('');
+        numberStr = numberStr.match(/.{1,3}/g);
+        numberStr = numberStr.map(str => parseInt(str.split('').reverse().join('')));
+        numberStr = numberStr.reverse();
+
+        return numberStr
+    };
+
     function getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] === value);
-    }
+    };
 
     function getTenPart(num){
         let out,
             unitPart = num % 10,
             tenPart = (Math.floor(num / 10)) * 10;
 
-        if(num <= 10){
-            out = getKeyByValue(unitNumbers, num);
-        }else if( num > 10 && num <= 29){
-            out = getKeyByValue(specialNumbers, num);
-        }else if(num > 29 && unitPart !== 0){
-            out = getKeyByValue(tenNumbers, tenPart) + ' y ' + getKeyByValue(unitNumbers, unitPart);
-        }else if(num > 29 && unitPart === 0){
+        if (num < 29){
+            if (num <= 10){
+                out = getKeyByValue(unitNumbers, num);
+            }else{
+                out = getKeyByValue(specialNumbers, num);
+            };
+        }else{
             out = getKeyByValue(tenNumbers, tenPart);
-        }
+
+            if(unitPart !== 0){
+                out+= ' y ' + getKeyByValue(unitNumbers, unitPart);
+            };
+        };
 
         return out;
-    }
+    };
 
     function getBasicUnits(num, replaceUno){
         let result,
@@ -88,10 +127,6 @@ export function numberToTextES(number){
 
         if(num < 100){
             result = getTenPart(num);
-        }
-
-        if(num > 100 && tenPart !== 0){
-            result = getKeyByValue(hundredNumbers, hundredPart) + ' ' + getTenPart(tenPart);
         }
 
         if(num > 100 && tenPart !== 0){
@@ -113,87 +148,166 @@ export function numberToTextES(number){
         return result;
     }
 
-    function getThousandUnits(num, replaceUno = false) {
-        let result,
-            thousandPart = Math.floor(num / 1000),
-            basicUnitsPart = num % 1000;
+    //Procesing the number
 
-        if(num > 2000 && basicUnitsPart !== 0){
-            result  = getBasicUnits(thousandPart, true) + ' mil ' + getBasicUnits(basicUnitsPart);
-        }
-
-        if(num > 2000 && basicUnitsPart === 0){
-            result  = getBasicUnits(thousandPart, replaceUno) + ' mil ';
-        }
-
-        if(num > 1000 && num < 2000 && basicUnitsPart !== 0){
-            result = 'mil ' + getBasicUnits(basicUnitsPart, replaceUno);
-        }
-
-        if(num === 1000){
-            result = 'mil ';
-        } 
-
-        return result;
+    if(!isNaN(number)){
+        number = number.toString();
     }
 
-    function getMillionUnits(num) {
-        let result,
-            millionPart = Math.floor(num / 1000000),
-            unitPart = num % 1000000;
-        
-        if (millionPart < 1000 && millionPart > 1){
-            result = getBasicUnits(millionPart, true) + ' millones ';
-        }
-        if (millionPart >= 1000 && millionPart > 1){
-            result = getThousandUnits(millionPart, true) + ' millones ';
-        }
-        if (millionPart === 1){
-            result = 'un millon '
-        }
-
-        if(unitPart<1000 && unitPart!=0){
-            result += getBasicUnits(unitPart)
-        }
-        if(unitPart>1000 && unitPart!=0){
-            result += getThousandUnits(unitPart)
-        }
-
-        return result;
+    if(number.charAt(0) === '-'){
+        isNegative = true;
+        number = number.substr(1);
     }
 
-    function getBillions(num){
-        let result,
-            billionPart = Math.floor(num / 1000000000000),
-            millionPart = num % 1000000000000;
-        
-        console.log(num.toLocaleString());
-        
-        if(billionPart === 1){
-            result = 'un billon';
-        }
-        if(billionPart > 1 && billionPart < 1000){
-            result = getBasicUnits(billionPart, true) + ' billones ';
-        }
-        if(billionPart >= 1000){
-            result = getThousandUnits(billionPart, true) + ' billones ';
-        }
+    numberArr = splitNumber(number);
 
-        //terminar la parte de los billones, me quede en las unidades, terminar este modulo (en esp) y crear validacion que respete el maximo numero soportado
-        if(millionPart < 100 && millionPart >= 1){
-            result += getBasicUnits(millionPart);
-        }
-
-        return result;
+    //converting to text
+    if (numberArr.length === 1){
+        resultText = getBasicUnits(numberArr[0]);
     }
 
-    //OJO : numero maximo soportado por este codigo 999999999999999
-    console.log(getBillions(999999999999999))
+    if(numberArr.length === 2){
+        if (numberArr[0] > 1){
+            resultText = getBasicUnits(numberArr[0],true)
+        }
 
+        resultText += ' mil ';
+
+        if(numberArr[1] > 0){
+            resultText += getBasicUnits(numberArr[1])
+        }
+    }
+
+    if(numberArr.length === 3){
+
+        if(numberArr[0]>1){
+            resultText = getBasicUnits(numberArr[0], true) + ' millones ';
+        }else{
+            resultText = 'Un millon ';
+        };
+
+        if(numberArr[1]>0){
+            if(numberArr[1] > 1){
+                resultText += getBasicUnits(numberArr[1], true) + ' ';
+            };
+            
+            resultText += 'mil ';
+        };
+
+        if(numberArr[2]>0){
+            resultText += getBasicUnits(numberArr[2])
+        }
+    };
+
+    if(numberArr.length === 4){
+
+        if(numberArr[0]>1){
+            resultText += getBasicUnits(numberArr[0], true) + ' ';
+        }
+
+        resultText+='mil ';
+
+        if(numberArr[1]>0){
+            resultText += getBasicUnits(numberArr[1], true) + ' ';
+        };
+        
+        resultText += ' millones ';
+
+        if(numberArr[2]>0){
+            if(numberArr[2] > 1){
+                resultText += getBasicUnits(numberArr[2], true) + ' ';
+            };
+            
+            resultText += 'mil ';
+        };
+
+        if(numberArr[3]>0){
+            resultText += getBasicUnits(numberArr[3])
+        }
+
+    };
+
+    if(numberArr.length === 5){
+
+        if(numberArr[0]>1){
+            resultText+= getBasicUnits(numberArr[0],true) + ' billones '
+        }else{
+            resultText+= 'un billon'
+        }
+
+        if(numberArr[1]>0){
+            if(numberArr[1]>1){
+                resultText += getBasicUnits(numberArr[1], true);
+            }
+                resultText+= ' mil ';
+        }
+
+        if(numberArr[2]>0){
+            resultText += getBasicUnits(numberArr[2], true) + ' millones ';
+        };
+
+        if(numberArr[3]>0){
+            if(numberArr[3] > 1){
+                resultText += getBasicUnits(numberArr[3], true) + ' ';
+            };
+            
+            resultText += 'mil ';
+        };
+
+        if(numberArr[4]>0){
+            resultText += getBasicUnits(numberArr[4])
+        }
+    };
+
+    if(numberArr.length === 6){
+
+        if(numberArr[0]>1){
+            resultText+= getBasicUnits(numberArr[0],true);
+        }
+        
+        resultText+= ' mil ';
+
+        if(numberArr[1]>1){
+            resultText+= getBasicUnits(numberArr[1],true);
+        }
+        
+        resultText+= ' billones ';
+        
+        if(numberArr[2]>0){
+            if(numberArr[2]>1){
+                resultText += getBasicUnits(numberArr[2], true);
+            }
+                resultText += ' mil ';
+        }
+
+        if(numberArr[3]>0){
+            resultText += getBasicUnits(numberArr[3], true) + ' millones ';
+        };
+ 
+        if(numberArr[4]>0){
+            if(numberArr[4] > 1){
+                resultText += getBasicUnits(numberArr[4], true) + ' ';
+            };
+            
+            resultText += 'mil ';
+        };
+
+        if(numberArr[5]>0){
+            resultText += getBasicUnits(numberArr[5])
+        }
+    }
+    
+    //returning the result
+
+    resultText = resultText.trim();
+
+    if (isNegative){
+        resultText = 'Negativo ' + resultText;
+    }
+
+    return resultText;
 }
 
 export function numberToTextEN(){
-
-
 
 }

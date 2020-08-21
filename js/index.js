@@ -1,4 +1,4 @@
 import { numberToTextES } from "./num_to_text.js";
 
-numberToTextES();
+console.log(numberToTextES(-5012100));
 
