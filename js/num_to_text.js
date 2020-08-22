@@ -25,7 +25,7 @@ export function numberToTextES(number){
     const specialNumbers = {
         'once': 11,
         'doce': 12,
-        'trece': 12,
+        'trece': 13,
         'catorce': 14,
         'quince': 15,
         'dieciséis': 16,	
@@ -80,11 +80,8 @@ export function numberToTextES(number){
     };
 
     let resultText = '',
-        numberArr = [],
-        isNegative = false;
+        numberArr = [];
 
-    
-    //Declaring functions
     function splitNumber(numberStr){
         numberStr = numberStr.split('').reverse().join('');
         numberStr = numberStr.match(/.{1,3}/g);
@@ -141,169 +138,90 @@ export function numberToTextES(number){
             result = 'ciento ' + getTenPart(tenPart);
         }
 
-        if(replaceUno && result && result.indexOf('uno') >= 0 ){
+        if(replaceUno && result.indexOf('uno') >= 0 ){
             result = result.replace('uno', 'un')
         }
 
         return result;
     }
 
-    //Procesing the number
+    function getThousands(){
+        if(numberArr[0] > 1){
+            resultText += getBasicUnits(numberArr[0], true) + ' ';
+        };
+        if(numberArr[0] >= 1){
+            resultText += 'mil ';
+        }
 
-    if(!isNaN(number)){
-        number = number.toString();
-    }
+        numberArr.shift();
+    };
 
-    if(number.charAt(0) === '-'){
-        isNegative = true;
-        number = number.substr(1);
-    }
+    function getMillions(singular, plural){
+        if(numberArr[0] === 1 && resultText === ''){
+            resultText += `un ${singular} `
+        }else{
+            if(numberArr[0]>=1){
+                resultText += getBasicUnits(numberArr[0], true);
+            }
+            resultText += ` ${plural} `
+        }
+
+        numberArr.shift();
+    };
 
     numberArr = splitNumber(number);
 
-    //converting to text
-    if (numberArr.length === 1){
-        resultText = getBasicUnits(numberArr[0]);
+    if(numberArr.length>=10){
+        getThousands();
     }
 
-    if(numberArr.length === 2){
-        if (numberArr[0] > 1){
-            resultText = getBasicUnits(numberArr[0],true)
-        }
-
-        resultText += ' mil ';
-
-        if(numberArr[1] > 0){
-            resultText += getBasicUnits(numberArr[1])
-        }
+    if(numberArr.length>=9){
+        getMillions('cuatrillon', 'cuatrillones')
     }
 
-    if(numberArr.length === 3){
-
-        if(numberArr[0]>1){
-            resultText = getBasicUnits(numberArr[0], true) + ' millones ';
-        }else{
-            resultText = 'Un millon ';
-        };
-
-        if(numberArr[1]>0){
-            if(numberArr[1] > 1){
-                resultText += getBasicUnits(numberArr[1], true) + ' ';
-            };
-            
-            resultText += 'mil ';
-        };
-
-        if(numberArr[2]>0){
-            resultText += getBasicUnits(numberArr[2])
-        }
+    if(numberArr.length>=8){
+        getThousands();
     };
 
-    if(numberArr.length === 4){
-
-        if(numberArr[0]>1){
-            resultText += getBasicUnits(numberArr[0], true) + ' ';
-        }
-
-        resultText+='mil ';
-
-        if(numberArr[1]>0){
-            resultText += getBasicUnits(numberArr[1], true) + ' ';
-        };
-        
-        resultText += ' millones ';
-
-        if(numberArr[2]>0){
-            if(numberArr[2] > 1){
-                resultText += getBasicUnits(numberArr[2], true) + ' ';
-            };
-            
-            resultText += 'mil ';
-        };
-
-        if(numberArr[3]>0){
-            resultText += getBasicUnits(numberArr[3])
-        }
-
+    if(numberArr.length>=7){
+        getMillions('trillon', 'trillones');
     };
 
-    if(numberArr.length === 5){
-
-        if(numberArr[0]>1){
-            resultText+= getBasicUnits(numberArr[0],true) + ' billones '
-        }else{
-            resultText+= 'un billon'
-        }
-
-        if(numberArr[1]>0){
-            if(numberArr[1]>1){
-                resultText += getBasicUnits(numberArr[1], true);
-            }
-                resultText+= ' mil ';
-        }
-
-        if(numberArr[2]>0){
-            resultText += getBasicUnits(numberArr[2], true) + ' millones ';
-        };
-
-        if(numberArr[3]>0){
-            if(numberArr[3] > 1){
-                resultText += getBasicUnits(numberArr[3], true) + ' ';
-            };
-            
-            resultText += 'mil ';
-        };
-
-        if(numberArr[4]>0){
-            resultText += getBasicUnits(numberArr[4])
-        }
+    if(numberArr.length>=6){
+        getThousands();
     };
-
-    if(numberArr.length === 6){
-
-        if(numberArr[0]>1){
-            resultText+= getBasicUnits(numberArr[0],true);
-        }
-        
-        resultText+= ' mil ';
-
-        if(numberArr[1]>1){
-            resultText+= getBasicUnits(numberArr[1],true);
-        }
-        
-        resultText+= ' billones ';
-        
-        if(numberArr[2]>0){
-            if(numberArr[2]>1){
-                resultText += getBasicUnits(numberArr[2], true);
-            }
-                resultText += ' mil ';
-        }
-
-        if(numberArr[3]>0){
-            resultText += getBasicUnits(numberArr[3], true) + ' millones ';
-        };
- 
-        if(numberArr[4]>0){
-            if(numberArr[4] > 1){
-                resultText += getBasicUnits(numberArr[4], true) + ' ';
-            };
-            
-            resultText += 'mil ';
-        };
-
-        if(numberArr[5]>0){
-            resultText += getBasicUnits(numberArr[5])
-        }
-    }
     
-    //returning the result
+    if(numberArr.length>=5){
+        getMillions('billon', 'billones')
+    };
+    
+    if(numberArr.length>=4){
+        getThousands();
+    };
 
+    if(numberArr.length>=3){
+        getMillions('millon', 'millones');
+    };
+
+    if(numberArr.length>=2){
+        getThousands();
+    };
+
+    if(numberArr[0]>=1 && numberArr.length>=1){
+        resultText += getBasicUnits(numberArr[0]);
+    };
+
+    if(numberArr[0] === 0 && resultText === ''){
+        resultText = 'cero'
+    };
+    
     resultText = resultText.trim();
 
-    if (isNegative){
-        resultText = 'Negativo ' + resultText;
-    }
+    resultText = resultText.split('');
+    resultText[0] = resultText[0].toUpperCase();
+    resultText = resultText.join('');
+
+    resultText+= '.'
 
     return resultText;
 }
