@@ -1,26 +1,4 @@
-/* Proceso de validacion antes de introducir un numero a esta funcion:
-
-        Puede ser numero o string.(si es numero pierde presicion al convertirlo a string)
-        Puede tener comas o no.
-        Puede tener numeros decimales o enteros
-        *Puede ser negativo
-
-        NO puede tener caracteres extraños en medio de los numeros, unicamente un negativo al comienzo para señalar que el numero es negativo
-        NO puede tener mas de un punto decimal
-        NO puede tener letras
-        NO puede tener ceros a la izquierda
-
-    */
-
-    /* Proceso de preparacion de datos dentro de la funcion:
-
-        **separar la parte decimal de la parte entera
-        X-Elimina el negativo al inicio y almacena en una variable que se trata de un numero negativo
-        X-Dividir numeros en grupos de tres
-
-*/
-
-export function numberToTextES(number){
+export function numberToText(number){
 
     const specialNumbers = {
         'once': 11,
@@ -77,10 +55,27 @@ export function numberToTextES(number){
         'setecientos': 700,
         'ochocientos': 800,
         'novecientos': 900
+    },
+        decimals = {
+        'décima': 1,
+        'centésima': 2,
+        'milésima': 3,
+        'diezmilésima': 4,
+        'cienmilésima': 5,
+        'millonésima' : 6,
+        'diezmillonésima': 7,
+        'cienmillonésima': 8,
+        'milmillonésima': 9,
+        'diezmilmillonésima': 10,
+        'cienmilmillonésima': 11,
+        'billonesima': 12
     };
 
     let resultText = '',
-        numberArr = [];
+        intArr,
+        decimalArr,
+        fullNumber = number,
+        isNegative = false;
 
     function splitNumber(numberStr){
         numberStr = numberStr.split('').reverse().join('');
@@ -138,83 +133,144 @@ export function numberToTextES(number){
             result = 'ciento ' + getTenPart(tenPart);
         }
 
-        if(replaceUno && result.indexOf('uno') >= 0 ){
-            result = result.replace('uno', 'un')
+        if(replaceUno && result && result.indexOf('uno') >= 0 ){
+            if(result.indexOf('veintiuno')>0){
+                result = result.replace('uno', 'ún')
+            }else{
+                result = result.replace('uno', 'un')
+            }
         }
 
         return result;
     }
 
-    function getThousands(){
-        if(numberArr[0] > 1){
-            resultText += getBasicUnits(numberArr[0], true) + ' ';
-        };
-        if(numberArr[0] >= 1){
-            resultText += 'mil ';
-        }
+    function numberToText(numberArr) {
 
-        numberArr.shift();
-    };
+        let resultText = '';
 
-    function getMillions(singular, plural){
-        if(numberArr[0] === 1 && resultText === ''){
-            resultText += `un ${singular} `
-        }else{
-            if(numberArr[0]>=1){
-                resultText += getBasicUnits(numberArr[0], true);
+        function getThousands(){
+            if(numberArr[0] > 1){
+                resultText += getBasicUnits(numberArr[0], true) + ' ';
+            };
+            if(numberArr[0] >= 1){
+                resultText += 'mil ';
             }
-            resultText += ` ${plural} `
+    
+            numberArr.shift();
+        };
+    
+        function getMillions(singular, plural){
+            if(numberArr[0] === 1 && resultText === ''){
+                resultText += `un ${singular} `
+            }else{
+                if(numberArr[0]>=1){
+                    resultText += getBasicUnits(numberArr[0], true);
+                }
+                resultText += ` ${plural} `
+            }
+    
+            numberArr.shift();
+        };
+
+        if(numberArr.length>=10){
+            getThousands();
+        };
+    
+        if(numberArr.length>=9){
+            getMillions('cuatrillon', 'cuatrillones')
+        };
+    
+        if(numberArr.length>=8){
+            getThousands();
+        };
+    
+        if(numberArr.length>=7){
+            getMillions('trillon', 'trillones');
+        };
+    
+        if(numberArr.length>=6){
+            getThousands();
+        };
+        
+        if(numberArr.length>=5){
+            getMillions('billon', 'billones')
+        };
+        
+        if(numberArr.length>=4){
+            getThousands();
+        };
+    
+        if(numberArr.length>=3){
+            getMillions('millon', 'millones');
+        };
+    
+        if(numberArr.length>=2){
+            getThousands();
+        };
+    
+        if(numberArr[0]>=1 && numberArr.length>=1){
+            resultText += getBasicUnits(numberArr[0]);
+        };
+    
+        if(numberArr[0] === 0 && resultText === ''){
+            resultText = 'cero'
+        };    
+
+        return resultText;
+    }
+
+    if(fullNumber.charAt(0) === '-'){
+        isNegative = true;
+        fullNumber = fullNumber.replace('-', '');
+    }
+
+    if(fullNumber.charAt(0) === '0'){
+        fullNumber = fullNumber.replace(/^0+/, '');
+    } 
+
+    if(fullNumber.includes('.')){
+        fullNumber = fullNumber.split('.');
+    
+        intArr = fullNumber[0];
+        if(intArr === ''){
+            intArr = '0';
         }
 
-        numberArr.shift();
-    };
+        fullNumber[1] = fullNumber[1].replace(/0+$/, '');
+        decimalArr = fullNumber[1];
 
-    numberArr = splitNumber(number);
-
-    if(numberArr.length>=10){
-        getThousands();
+        intArr = splitNumber(intArr);
+        resultText = numberToText(intArr);
+        
+        decimalArr = decimalArr.replace(/^0+/, '');
+        decimalArr = splitNumber(decimalArr);
+    }else{
+        intArr = fullNumber;
+        if(intArr === ''){
+            intArr = '0';
+        };
     }
 
-    if(numberArr.length>=9){
-        getMillions('cuatrillon', 'cuatrillones')
+    if(decimalArr){
+        if(decimalArr.length === 1 && decimalArr[0] === 1){
+            resultText += ' con una '
+        }else{
+            resultText += ' con ' + numberToText(decimalArr).replace('uno', 'un') + ' ';
+        }
+        resultText += getKeyByValue(decimals, fullNumber[1].length);
+
+        if(decimalArr[0]>1){
+            resultText += 's';
+        } 
+    }else{
+        intArr = splitNumber(intArr);
+        resultText = numberToText(intArr);
     }
 
-    if(numberArr.length>=8){
-        getThousands();
-    };
+    if(isNegative){
+        resultText = 'negativo ' + resultText;
+    }
 
-    if(numberArr.length>=7){
-        getMillions('trillon', 'trillones');
-    };
-
-    if(numberArr.length>=6){
-        getThousands();
-    };
-    
-    if(numberArr.length>=5){
-        getMillions('billon', 'billones')
-    };
-    
-    if(numberArr.length>=4){
-        getThousands();
-    };
-
-    if(numberArr.length>=3){
-        getMillions('millon', 'millones');
-    };
-
-    if(numberArr.length>=2){
-        getThousands();
-    };
-
-    if(numberArr[0]>=1 && numberArr.length>=1){
-        resultText += getBasicUnits(numberArr[0]);
-    };
-
-    if(numberArr[0] === 0 && resultText === ''){
-        resultText = 'cero'
-    };
-    
     resultText = resultText.trim();
 
     resultText = resultText.split('');
@@ -224,8 +280,4 @@ export function numberToTextES(number){
     resultText+= '.'
 
     return resultText;
-}
-
-export function numberToTextEN(){
-
 }

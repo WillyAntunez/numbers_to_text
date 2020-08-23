@@ -15,31 +15,33 @@
     </header>
 
     <main>
-        <div class="number-in">  
-            <h2>Ingrese un numero</h2>
-            <input type="text" >
-        </div>
-        
-        <div class="language-btns">
-            <h2>Idioma</h2>
+        <div class="number-div">  
+            <h2>Ingrese un numero:</h2>
+            <hr>
+            <p>
+                El valor puede ser un numero positivo o negativo, decimal o entero.
+                <br>
+                No debe estar separado por comas.
+                <br>
+                Los enteros tienen un maximo de 30 digitos y los decimales tienen un limite de 12 digitos.
+            </p>
+            
+            <input type="text" maxlength="30" class="number-in" id="number-in" placeholder="Ej: 123456, 123.456, -123.456">
 
-            <div>
-                <button>Español</button>
-                <button>Ingles</button>
-            </div>
+            <p class="error" id="error"></p>
         </div>
         
         <button class="result-btn">Ver resultado</button>
 
-        <div class="result">
-            <h2 class="result-title">Resultado en texto:</h2>
+        <div class="result hidden" id="result-div">
+            <h2>Resultado en texto:</h2>
             <hr>
-            <h2 class="result-out">Ciento cincuenta y uno</h2>
+            <h3 class="result-out"></h3>
         </div>
     </main>
 
     <footer>
-        <p>Aplicacion desarrollada por <a href="">Willy Antunez</a></p>
+        <p>Aplicacion desarrollada por <a href="">Willy Antunez</a>.</p>
     </footer>
     
     <script src="./js/index.js" type="module"></script>

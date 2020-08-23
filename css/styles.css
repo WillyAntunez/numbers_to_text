@@ -22,7 +22,7 @@ body, html{
     box-sizing: border-box;
 }
 
-h2, p{
+h2, p, h3{
     font-family: "Roboto", Arial, Helvetica, sans-serif;
     font-weight: 400;
 }
@@ -35,12 +35,16 @@ h1{
 }
 
 h2{
-    font-size: 30px;
-    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+h3{
+    font-size: 20px;
 }
 
 p{
-    font-size: 14px;
+    font-size: 15px;
 }
 
 button{
@@ -50,6 +54,15 @@ button{
     border-radius: none;
 }
 
+hr{
+    width: 250px;
+    border: 1px solid var(--regular-gray);
+    margin: 6px 0 14px 0;
+}
+
+.hidden{
+    visibility: hidden;
+}
 
 /* Header */
 header{
@@ -73,7 +86,7 @@ main{
 }
 
 /* number input */
-main .number-in{
+main .number-div{
     width: 90%;
     max-width: 549px;
 
@@ -84,11 +97,11 @@ main .number-in{
     margin: 25px 0 20px 0;
 }
 
-main .number-in h2{
-    margin-bottom: 10px;
+main .number-div h2{
+    margin: 0 0 10px 0;
 }
 
-main .number-in input{
+main .number-div .number-in{
     width: 100%;
     
     height: 41px;
@@ -96,28 +109,22 @@ main .number-in input{
 
     flex-grow: 1;
 
+    margin: 10px 0;
+
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
     text-align: center;
     font-size: 25px;
 }
 
-/* Language buttons */
-main .language-btns{
-    margin-bottom: 20px;
-}
-
-main .language-btns h2{
-    margin-bottom: 15px;
-}
-
-main .language-btns div button{
-    width: 150px;
-    height: 38px;
-
+main .number-div .number-in::placeholder{
+    color: #b5b5b5;
     font-size: 20px;
 }
 
-main .language-btns div button:nth-child(1){
-    margin-right: 10px;
+main .number-div .error{
+    color: #cb3234;
+    margin: 5px;
+    margin-bottom: 0;
 }
 
 /* Result button */
@@ -126,8 +133,12 @@ main .result-btn{
     height: 44px;
     margin-bottom: 30px;
 
-    font-size: 20px;
+    font-size: 18px;
+
+    cursor: pointer;
 }
+
+
 
 /* Result */
 
@@ -137,14 +148,8 @@ main .result{
     flex-direction: column;
 }
 
-main .result .result-title{
-    font-weight: 700;
-}
-
-main .result hr{
-    width: 250px;
-    border: 1px solid var(--regular-gray);
-    margin: 6px 0 14px 0;
+main .result h2{
+    margin: 10px 0;
 }
 
 

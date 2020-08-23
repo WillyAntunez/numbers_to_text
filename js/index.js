@@ -1,4 +1,11 @@
-import { numberToTextES } from "./num_to_text.js";
+import { numberToText } from "./num_to_text.js";
 
-console.log(numberToTextES('121342135415658465432132516456'));
+function validateNumber(num){
+    const isValid = /^-?[0-9]\d*(\.\d+)?$/.test(num);
+    return isValid;
+}
+
+//console.log(validateNumber('-01.10'))
+
+console.log(numberToText('0'));
 
