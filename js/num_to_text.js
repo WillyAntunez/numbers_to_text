@@ -95,7 +95,7 @@ export function numberToText(number){
             unitPart = num % 10,
             tenPart = (Math.floor(num / 10)) * 10;
 
-        if (num < 29){
+        if (num <= 29){
             if (num <= 10){
                 out = getKeyByValue(unitNumbers, num);
             }else{
