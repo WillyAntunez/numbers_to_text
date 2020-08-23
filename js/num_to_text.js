@@ -147,17 +147,6 @@ export function numberToText(number){
     function transformToText(numberArr) {
 
         let resultText = '';
-
-        /* function getThousands(){
-            if(numberArr[0] > 1){
-                resultText += getBasicUnits(numberArr[0], true) + ' ';
-            };
-            if(numberArr[0] >= 1){
-                resultText += 'mil ';
-            }
-    
-            numberArr.shift();
-        }; */
     
         function getMillions(singular, plural, thousands){
 
@@ -278,7 +267,7 @@ export function numberToText(number){
         }
         resultText += getKeyByValue(decimals, fullNumber[1].length);
 
-        if(decimalArr[0]>1){
+        if(parseInt(fullNumber[1].replace(/0+$/, ''))>1){
             resultText += 's';
         } 
     }else{
