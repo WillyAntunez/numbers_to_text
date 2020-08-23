@@ -144,7 +144,7 @@ export function numberToText(number){
         return result;
     }
 
-    function numberToText(numberArr) {
+    function transformToText(numberArr) {
 
         let resultText = '';
 
@@ -254,12 +254,12 @@ export function numberToText(number){
     }
 
     if(decimalArr && decimalArr[0] !== 0){
-        resultText = numberToText(intArr);
+        resultText = transformToText(intArr);
 
         if(decimalArr.length === 1 && decimalArr[0] === 1){
             resultText += ' con una '
         }else{
-            resultText += ' con ' + numberToText(decimalArr).replace('uno', 'un') + ' ';
+            resultText += ' con ' + transformToText(decimalArr).replace('uno', 'un') + ' ';
         }
         resultText += getKeyByValue(decimals, fullNumber[1].length);
 
@@ -267,7 +267,7 @@ export function numberToText(number){
             resultText += 's';
         } 
     }else{
-        resultText = numberToText(intArr);
+        resultText = transformToText(intArr);
     }
 
     if(isNegative){
