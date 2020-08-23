@@ -148,7 +148,7 @@ export function numberToText(number){
 
         let resultText = '';
 
-        function getThousands(){
+        /* function getThousands(){
             if(numberArr[0] > 1){
                 resultText += getBasicUnits(numberArr[0], true) + ' ';
             };
@@ -157,55 +157,70 @@ export function numberToText(number){
             }
     
             numberArr.shift();
-        };
+        }; */
     
-        function getMillions(singular, plural){
-            if(numberArr[0] === 1 && resultText === ''){
-                resultText += `un ${singular} `
-            }else{
-                if(numberArr[0]>=1){
-                    resultText += getBasicUnits(numberArr[0], true);
+        function getMillions(singular, plural, thousands){
+
+            if(numberArr.length === thousands){
+                if(numberArr[0] > 1){
+                    resultText += getBasicUnits(numberArr[0], true) + ' ';
+                };
+                if(numberArr[0] >= 1){
+                    resultText += 'mil ';
                 }
+
+                numberArr.shift();
+            }
+            
+            if(numberArr[0]>= 1){
+                if(numberArr[0] === 1 && resultText === ''){
+                    resultText += `un ${singular} `
+                }else{
+                        resultText += getBasicUnits(numberArr[0], true);
+                        resultText += ` ${plural} `
+                }
+            }else{
                 resultText += ` ${plural} `
             }
-    
+
             numberArr.shift();
+
+            if(numberArr.length > 3 && numberArr[0]===0){
+                numberArr = numberArr.join('');
+                numberArr = numberArr.replace(/^0+/, '');
+                if(numberArr != ''){
+                    numberArr = splitNumber(numberArr);
+                }else{
+                    numberArr = [];
+                }
+            }
         };
 
-        if(numberArr.length>=10){
-            getThousands();
+        if(numberArr.length>=9 && numberArr.length<=10){
+            getMillions('cuatrillon', 'cuatrillones', 10)
         };
     
-        if(numberArr.length>=9){
-            getMillions('cuatrillon', 'cuatrillones')
+        if(numberArr.length>=7 && numberArr.length<=8){
+            getMillions('trillon', 'trillones', 8);
         };
     
-        if(numberArr.length>=8){
-            getThousands();
-        };
-    
-        if(numberArr.length>=7){
-            getMillions('trillon', 'trillones');
-        };
-    
-        if(numberArr.length>=6){
-            getThousands();
+        if(numberArr.length>=5 && numberArr.length<=6){
+            getMillions('billon', 'billones', 6)
         };
         
-        if(numberArr.length>=5){
-            getMillions('billon', 'billones')
-        };
-        
-        if(numberArr.length>=4){
-            getThousands();
-        };
-    
-        if(numberArr.length>=3){
-            getMillions('millon', 'millones');
+        if(numberArr.length>=3 && numberArr.length<=4){
+            getMillions('millon', 'millones', 4);
         };
     
         if(numberArr.length>=2){
-            getThousands();
+            if(numberArr[0] > 1){
+                resultText += getBasicUnits(numberArr[0], true) + ' ';
+            };
+            if(numberArr[0] >= 1){
+                resultText += 'mil ';
+            }
+
+            numberArr.shift();
         };
     
         if(numberArr[0]>=1 && numberArr.length>=1){
