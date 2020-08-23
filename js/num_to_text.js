@@ -236,22 +236,26 @@ export function numberToText(number){
             intArr = '0';
         }
 
-        fullNumber[1] = fullNumber[1].replace(/0+$/, '');
         decimalArr = fullNumber[1];
-
-        intArr = splitNumber(intArr);
-        resultText = numberToText(intArr);
-        
+        decimalArr = decimalArr.replace(/0+$/, '');
         decimalArr = decimalArr.replace(/^0+/, '');
+        if(decimalArr === ''){
+            decimalArr = '0';
+        }
+        
+        intArr = splitNumber(intArr);
         decimalArr = splitNumber(decimalArr);
     }else{
         intArr = fullNumber;
         if(intArr === ''){
             intArr = '0';
         };
+        intArr = splitNumber(intArr);
     }
 
-    if(decimalArr){
+    if(decimalArr && decimalArr[0] !== 0){
+        resultText = numberToText(intArr);
+
         if(decimalArr.length === 1 && decimalArr[0] === 1){
             resultText += ' con una '
         }else{
@@ -263,7 +267,6 @@ export function numberToText(number){
             resultText += 's';
         } 
     }else{
-        intArr = splitNumber(intArr);
         resultText = numberToText(intArr);
     }
 

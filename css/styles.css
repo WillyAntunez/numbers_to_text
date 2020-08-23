@@ -136,8 +136,16 @@ main .result-btn{
     font-size: 18px;
 
     cursor: pointer;
+    
+    transition: all .1s ease-in-out;
 }
 
+main .result-btn:hover{
+
+    color: white;
+    background-color: var(--dark-gray);
+
+}
 
 
 /* Result */
